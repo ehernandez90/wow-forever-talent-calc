@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './ui/shell.css';
+@import './ui/theme-forever.css';
 
 :root {
   color-scheme: dark;
