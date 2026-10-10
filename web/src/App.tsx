@@ -51,19 +51,15 @@ export default function App() {
         Skip to the talent trees
       </a>
       <nav className="app-nav mb-4 flex items-baseline justify-between gap-4">
-        <a href="#/" className="serif text-xl font-semibold text-[var(--gold)] no-underline">
-          WoW Forever Talents
+        <a href="#/" className="site-wordmark serif font-semibold no-underline">
+          WoW Forever
         </a>
         <span className="app-nav-right text-xs text-[var(--text-dim)]">
           <a href={changesHash()} data-testid="nav-changes">Changes</a>
-          {' · '}
           <a href={updatesHash()} data-testid="nav-updates">Updates</a>
-          {' · '}
           <a href={racesHash()} data-testid="nav-races">Races</a>
-          {' · '}
           <a href={spellsHash()} data-testid="nav-spells">Spells</a>
-          {' · '}
-          Classic+ talent calculator, unofficial
+          <span className="site-note">Talent Calculator · Unofficial</span>
           <ShortcutsOverlay />
         </span>
       </nav>
