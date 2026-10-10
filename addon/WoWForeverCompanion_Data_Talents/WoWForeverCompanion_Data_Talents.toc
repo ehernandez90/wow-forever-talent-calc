@@ -1,0 +1,10 @@
+## Interface: 16001
+## Title: WoW Forever Companion - Talent Data
+## Notes: Generated talent/class data for WoW Forever Companion
+## Author: ehernandez90
+## Version: 0.1.0
+## Dependencies: WoWForeverCompanion
+## LoadOnDemand: 1
+## X-Data-Pack: talents
+
+Generated.lua
