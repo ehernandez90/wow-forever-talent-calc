@@ -1,12 +1,12 @@
 /* Calculator-specific visual layer. Loaded after calculator.css. */
 
-.calculator-header {
+header.panel {
   padding: 14px 16px !important;
   border-color: #34373c;
   background: linear-gradient(180deg, #17191c 0%, #101214 100%);
 }
 
-.calculator-header h1 {
+header.panel h1 {
   font-size: 25px !important;
   color: #f0c65e !important;
 }
@@ -43,7 +43,7 @@
   gap: 14px;
 }
 
-.talent-tree-panel {
+.tree-columns > section.panel {
   position: relative;
   overflow: hidden;
   border-color: #34373c;
@@ -52,7 +52,7 @@
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
 }
 
-.talent-tree-panel > div:first-child {
+.tree-columns > section.panel > div:first-child {
   min-height: 42px;
   margin: -8px -8px 8px !important;
   padding: 9px 11px !important;
@@ -60,13 +60,13 @@
   background: linear-gradient(180deg, #1c1f22 0%, #151719 100%);
 }
 
-.talent-tree-panel h2 {
+.tree-columns > section.panel h2 {
   color: #ece5d8 !important;
   font-size: 15px !important;
   font-weight: 700;
 }
 
-.talent-tree-panel [data-testid^='tree-points-'] {
+.tree-columns > section.panel [data-testid^='tree-points-'] {
   display: inline-grid;
   min-width: 28px;
   height: 25px;
@@ -78,7 +78,7 @@
   font-weight: 700;
 }
 
-.talent-tree-panel .btn {
+.tree-columns > section.panel .btn {
   min-height: 26px;
   padding: 2px 8px;
   font-size: 11px;
@@ -191,8 +191,6 @@
   background: #17191c;
 }
 
-/* Allow the three trees to dominate large screens, similar to dedicated
-   calculators rather than a narrow article column. */
 @media (min-width: 1280px) {
   .class-layout {
     --cell: 48px;
