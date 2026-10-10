@@ -9,7 +9,6 @@ import { continueLabel, forgetLastBuild, readLastBuild } from './storage'
 import { SITE_TITLE, useTitle } from './title'
 import { checkedLine, RANKS_LINE, SOURCE_LINE } from './trust'
 
-/** Re-exported so the many call sites that already look here keep working. */
 export { REPO_URL } from './site'
 
 interface IndexEntry {
@@ -24,16 +23,8 @@ interface IndexEntry {
   trees: { id: string; name: string; talents: number }[]
 }
 
-/**
- * Module-level: the index is generated at build time by
- * scripts/gen-data-index.mjs, so the landing page prints class names, trees and
- * counts from ~5 kB of JSON instead of importing all nine class chunks
- * (344 kB raw / 58 kB gzip and nine extra requests - performance review P-1).
- * Example classes are only present when VITE_INCLUDE_EXAMPLES=1 (dev, e2e).
- */
 const classes: IndexEntry[] = (classesIndex as IndexEntry[]).filter((c) => includeExamples || c.origin === 'talents')
 
-/** Landing page: one card per class file with its trees and talent counts. */
 export function ClassPicker() {
   useTitle(SITE_TITLE)
   const [last, setLast] = useState(() => readLastBuild())
@@ -59,76 +50,72 @@ export function ClassPicker() {
           </button>
         </div>
       )}
-      <div className="panel p-5">
-        <h1 className="serif mb-2 text-lg text-[var(--gold)]">Choose a class</h1>
-        {/* The one place the caveat is stated: tooltips and class pages must not repeat it. */}
-        <p className="mb-2 text-sm text-[var(--text-dim)]" data-testid="landing-caveat">
-          {SOURCE_LINE} {checkedLine(facts.talents, 'talents')} Expect wrong names and numbers. {RANKS_LINE}
-        </p>
-        {/* The one thing this calculator has that Wowhead cannot: the diff. */}
-        <p className="mb-2 text-sm">
-          <a href={changesHash()} data-testid="landing-changes-link">
+
+      <div className="landing-panel panel">
+        <div className="landing-hero">
+          <div className="landing-kicker">WoW Forever · Talent Calculator</div>
+          <h1 className="landing-title serif">Build your class</h1>
+          <p className="landing-subtitle">
+            Pick a class, spend points across all three talent trees, share your build, and compare Forever changes
+            against Classic Era.
+          </p>
+        </div>
+
+        <div className="landing-links">
+          <a className="landing-link" href={changesHash()} data-testid="landing-changes-link">
             What changed against Classic Era
           </a>
-          <span className="text-[var(--text-dim)]"> - every new, moved, re-ranked and reworded talent, class by class.</span>
-        </p>
-        {/* Phase 2b: the racials and the race/class matrix, the other half of
-            "what is different this time". */}
-        <p className="mb-2 text-sm">
-          <a href={racesHash()} data-testid="landing-races-link">
-            Races and the class matrix
+          <a className="landing-link" href={racesHash()} data-testid="landing-races-link">
+            Races & class matrix
           </a>
-          <span className="text-[var(--text-dim)]">
-            {' '}
-            - {facts.racialTraits.total} racial traits, the Skyborne variants, and the combinations Classic Era never
-            allowed.
-          </span>
-        </p>
-        {/* Phase 2d: the spellbook pages the stream opened, and the coverage
-            record that says which it did not. */}
-        <p className="mb-2 text-sm">
-          <a href={spellsHash()} data-testid="landing-spells-link">
+          <a className="landing-link" href={spellsHash()} data-testid="landing-spells-link">
             Spells seen on stream
           </a>
-          <span className="text-[var(--text-dim)]">
-            {' '}
-            - {facts.spellEntries.total} spellbook entries and {facts.spellTooltips.total} tooltips read from the demo,
-            with the pages nobody opened named.
-          </span>
-        </p>
-        <p className="mb-4 text-sm text-[var(--text-dim)]">
-          <a href={REPO_URL} target="_blank" rel="noreferrer">
-            github.com/Deradon/wow-forever-talent-calc
-          </a>
-        </p>
+        </div>
+
         {classes.length === 0 ? (
-          <p className="text-[var(--text-dim)]">
+          <p className="text-center text-[var(--text-dim)]">
             No class data yet. Real classes appear here as they pass review; run the dev server to see the example
             class.
           </p>
         ) : (
-          <ul className="grid grid-cols-3 gap-3" data-testid="class-list">
+          <ul className="class-list-modern grid" data-testid="class-list">
             {classes.map((c) => (
               <ClassCard key={c.id} entry={c} />
             ))}
           </ul>
         )}
+
+        <div className="mt-7 border-t border-[#292c30] pt-4 text-center text-xs text-[var(--text-dim)]">
+          <p className="mb-2" data-testid="landing-caveat">
+            {SOURCE_LINE} {checkedLine(facts.talents, 'talents')} Expect wrong names and numbers. {RANKS_LINE}
+          </p>
+          <p className="mb-0">
+            {facts.racialTraits.total} racial traits · {facts.spellEntries.total} spellbook entries ·{' '}
+            {facts.spellTooltips.total} spell tooltips ·{' '}
+            <a href={REPO_URL} target="_blank" rel="noreferrer">
+              source on GitHub
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   )
 }
 
 function ClassCard({ entry }: { entry: IndexEntry }) {
-  // Provenance and the review queue are deliberately not shown here: the caveat
-  // above states the data source once, and `#/review/<class>` stays reachable by URL.
+  const treeNames = entry.trees.map((tree) => tree.name).join(' · ')
   return (
     <li className="class-card">
-      <a href={`#/${entry.id}`} className="block no-underline" data-testid={`class-${entry.id}`}>
-        <div className="flex items-center gap-3">
-          <ClassIcon classId={entry.id} className={entry.className} size={40} />
-          <span className="serif text-lg text-[var(--gold)]">{entry.className}</span>
-          {entry.origin !== 'talents' && <span className="text-xs text-[var(--text-dim)]">example</span>}
-        </div>
+      <a
+        href={`#/${entry.id}`}
+        className="class-card-link block no-underline"
+        data-testid={`class-${entry.id}`}
+      >
+        <ClassIcon classId={entry.id} className={entry.className} size={56} />
+        <span className="class-card-name serif">{entry.className}</span>
+        <span className="class-card-meta">{treeNames}</span>
+        {entry.origin !== 'talents' && <span className="text-xs text-[var(--text-dim)]">example</span>}
       </a>
     </li>
   )
