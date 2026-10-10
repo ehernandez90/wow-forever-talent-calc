@@ -61,7 +61,17 @@ export function TreePanel({
   onDeselect,
 }: Props) {
   const spent = pointsInTree(build, tree.id)
-  const style = { '--rows': tree.rows, '--cols': tree.cols } as CSSProperties
+  // One generated class panorama is shared by all three trees. Each panel
+  // shows a different third of that image: left=0%, middle=50%, right=100%.
+  // Using BASE_URL keeps the asset path correct on GitHub Pages project sites.
+  const artPosition = `${Math.max(0, Math.min(2, tree.order)) * 50}%`
+  const artUrl = `${import.meta.env.BASE_URL}assets/tree-backgrounds/${cls.class}.webp`
+  const style = {
+    '--rows': tree.rows,
+    '--cols': tree.cols,
+    '--tree-art': `url("${artUrl}")`,
+    '--tree-art-x': artPosition,
+  } as CSSProperties
   const [focused, setFocused] = useState<string>()
   const highlight = useHighlightNew()
   // One switch for the whole page, so only the leftmost panel renders it.
