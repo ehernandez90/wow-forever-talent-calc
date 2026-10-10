@@ -1,20 +1,21 @@
 @import 'tailwindcss';
 @import './ui/shell.css';
 @import './ui/theme-forever.css';
+@import './ui/calculator-theme.css';
 
 :root {
   color-scheme: dark;
-  --gold: #ffd100;
-  --gold-dim: #c8a24a;
-  --gold-border: #7a6230;
-  --green: #1eff00;
-  --grey: #8d8d8d;
-  --red: #ff4040;
-  --panel: #0f1526;
-  --panel-2: #161d33;
-  --bg: #07090f;
-  --text: #f0e6d2;
-  --text-dim: #b8b0a0;
+  --gold: #f2c14e;
+  --gold-dim: #c99a3d;
+  --gold-border: #5d4b2d;
+  --green: #39d353;
+  --grey: #737b88;
+  --red: #ef5350;
+  --panel: #121416;
+  --panel-2: #191c20;
+  --bg: #090a0c;
+  --text: #e7e1d6;
+  --text-dim: #9b9b9b;
 }
 
 html,
@@ -24,6 +25,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family:
+    Inter,
     system-ui,
     -apple-system,
     'Segoe UI',
@@ -34,7 +36,10 @@ body {
 }
 
 body {
-  background-image: radial-gradient(ellipse at top, #141b33 0%, var(--bg) 60%);
+  background-image:
+    radial-gradient(circle at 50% -15%, rgba(111, 82, 34, 0.20), transparent 36rem),
+    linear-gradient(180deg, #0c0d0f 0%, #08090b 45%, #07080a 100%);
+  background-attachment: fixed;
 }
 
 a {
