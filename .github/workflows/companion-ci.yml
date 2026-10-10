@@ -25,6 +25,9 @@ jobs:
       - name: Validate companion catalog and canonical data
         run: node scripts/validate-companion-data.mjs
 
+      - name: Validate source and licensing registry
+        run: node scripts/validate-source-registry.mjs
+
       - name: Generate Lua data packs
         run: node scripts/build-addon-data.mjs
 
