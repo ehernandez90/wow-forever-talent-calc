@@ -1,0 +1,88 @@
+name: Companion CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feature/v1-upcoming-comparison
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  addon-and-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate companion catalog and canonical data
+        run: node scripts/validate-companion-data.mjs
+
+      - name: Generate Lua data packs
+        run: node scripts/build-addon-data.mjs
+
+      - name: Verify generated packs are deterministic/current
+        run: node scripts/build-addon-data.mjs --check
+
+      - name: Install Lua 5.1 and zip
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 zip
+
+      - name: Run Lua unit tests
+        run: lua5.1 addon/tests/run.lua
+
+      - name: Stage installable addon
+        run: |
+          rm -rf dist
+          mkdir -p dist
+          cp -R addon/WoWForeverCompanion dist/
+          cp -R addon/WoWForeverCompanion_Data_Core dist/
+          cp -R addon/WoWForeverCompanion_Data_Talents dist/
+          cd dist
+          zip -r wow-forever-companion-v1.zip \
+            WoWForeverCompanion \
+            WoWForeverCompanion_Data_Core \
+            WoWForeverCompanion_Data_Talents
+
+      - name: Upload installable addon artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wow-forever-companion-v1
+          path: dist/wow-forever-companion-v1.zip
+          if-no-files-found: error
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Production build
+        run: npm run build
