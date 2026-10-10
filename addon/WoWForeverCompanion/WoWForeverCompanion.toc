@@ -1,0 +1,14 @@
+## Interface: 16001
+## Title: WoW Forever Companion
+## Notes: Offline knowledge hub for World of Warcraft: Forever
+## Author: ehernandez90
+## Version: 0.1.0
+## SavedVariables: WoWForeverCompanionDB
+## X-Game-Flavor: Forever
+## X-Data-Revision: 2026-10-10-v1
+
+DataRegistry.lua
+Search.lua
+Core.lua
+Modules.lua
+UI.lua
