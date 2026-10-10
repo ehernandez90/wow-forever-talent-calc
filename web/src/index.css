@@ -49,3 +49,21 @@ a {
 button {
   font: inherit;
 }
+
+/*
+ * ClassPage lazy-loads calculator.css after this entry stylesheet. Its legacy
+ * `.tree-grid { background: ... }` shorthand would otherwise replace the
+ * generated class panorama. The more-specific selector below deliberately wins
+ * that cascade while leaving the base calculator stylesheet untouched.
+ */
+.class-layout .tree-grid {
+  background-image:
+    linear-gradient(180deg, rgba(4, 6, 9, 0.34) 0%, rgba(4, 6, 9, 0.48) 52%, rgba(3, 5, 7, 0.62) 100%),
+    var(--tree-art),
+    radial-gradient(circle at 50% 15%, rgba(91, 73, 42, 0.12), transparent 58%),
+    linear-gradient(180deg, #171a1d 0%, #0b0d0f 100%);
+  background-size: 100% 100%, 300% 100%, 100% 100%, 100% 100%;
+  background-position: center, var(--tree-art-x) center, center, center;
+  background-repeat: no-repeat;
+  background-color: #0b0d0f;
+}
