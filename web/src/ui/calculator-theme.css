@@ -1,0 +1,216 @@
+/* Calculator-specific visual layer. Loaded after calculator.css. */
+
+.calculator-header {
+  padding: 14px 16px !important;
+  border-color: #34373c;
+  background: linear-gradient(180deg, #17191c 0%, #101214 100%);
+}
+
+.calculator-header h1 {
+  font-size: 25px !important;
+  color: #f0c65e !important;
+}
+
+.class-controls {
+  gap: 8px !important;
+}
+
+.control-field {
+  border-color: #34383e !important;
+  border-radius: 6px !important;
+  background: #0d0f11 !important;
+}
+
+.search-input {
+  min-height: 32px;
+  border-color: #3a3e44;
+  border-radius: 5px;
+  background: #0c0e10;
+}
+
+.search-input:focus {
+  border-color: #7b6332;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(202, 155, 62, 0.10);
+}
+
+.class-layout {
+  gap: 18px;
+}
+
+.tree-columns {
+  justify-content: center;
+  gap: 14px;
+}
+
+.talent-tree-panel {
+  position: relative;
+  overflow: hidden;
+  border-color: #34373c;
+  border-radius: 7px;
+  background: #0e1012;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
+}
+
+.talent-tree-panel > div:first-child {
+  min-height: 42px;
+  margin: -8px -8px 8px !important;
+  padding: 9px 11px !important;
+  border-bottom: 1px solid #30343a;
+  background: linear-gradient(180deg, #1c1f22 0%, #151719 100%);
+}
+
+.talent-tree-panel h2 {
+  color: #ece5d8 !important;
+  font-size: 15px !important;
+  font-weight: 700;
+}
+
+.talent-tree-panel [data-testid^='tree-points-'] {
+  display: inline-grid;
+  min-width: 28px;
+  height: 25px;
+  place-items: center;
+  border: 1px solid #4b4539;
+  border-radius: 5px;
+  background: #0d0f11;
+  color: #f0c65e;
+  font-weight: 700;
+}
+
+.talent-tree-panel .btn {
+  min-height: 26px;
+  padding: 2px 8px;
+  font-size: 11px;
+}
+
+.tree-body {
+  border-radius: 5px;
+}
+
+.tree-grid {
+  padding: 16px;
+  border: 1px solid #22262a;
+  border-radius: 5px;
+  background:
+    linear-gradient(rgba(8, 10, 12, 0.69), rgba(5, 7, 9, 0.88)),
+    radial-gradient(circle at 50% 15%, rgba(91, 73, 42, 0.16), transparent 58%),
+    linear-gradient(180deg, #171a1d 0%, #0b0d0f 100%);
+  box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.48);
+}
+
+.cell {
+  border-width: 2px;
+  border-color: #60646a;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+  transition: transform 90ms ease, border-color 100ms ease, box-shadow 100ms ease, filter 100ms ease;
+}
+
+.cell:hover:not([data-state='locked']) {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 4px 10px rgba(0, 0, 0, 0.65);
+}
+
+.cell[data-state='available'],
+.cell[data-state='partial'] {
+  border-color: #35c951;
+  box-shadow: 0 0 0 1px rgba(53, 201, 81, 0.12), 0 2px 7px rgba(0, 0, 0, 0.55);
+}
+
+.cell[data-state='maxed'] {
+  border-color: #e5b84e;
+  box-shadow: 0 0 0 1px rgba(229, 184, 78, 0.18), 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+.cell[data-state='locked'] {
+  border-color: #44484d;
+}
+
+.cell[data-state='locked'] .icon-clip {
+  filter: grayscale(0.78) brightness(0.48);
+}
+
+.cell .badge {
+  min-width: 20px;
+  height: 19px;
+  line-height: 17px;
+  border-radius: 4px 0 3px 0;
+  background: rgba(5, 6, 7, 0.94);
+  font-size: 11px;
+}
+
+.tooltip {
+  border-color: #5e4c2b;
+  border-radius: 6px;
+  background: rgba(8, 9, 11, 0.985);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.72);
+}
+
+.tooltip .name {
+  color: #fff4d2;
+}
+
+.tab {
+  min-height: 34px;
+  padding: 6px 16px;
+  border-color: #363a3f;
+  border-radius: 6px 6px 0 0;
+  background: #0e1012;
+  color: #96999e;
+}
+
+.tab:hover {
+  color: #d7d9dc;
+}
+
+.tab[aria-selected='true'] {
+  border-color: #5b4c31;
+  background: #181a1d;
+  color: #f0c65e;
+}
+
+.control-legend {
+  color: #70757c !important;
+  font-size: 11px !important;
+}
+
+.notice,
+.blocked-message {
+  border-radius: 6px;
+}
+
+.search-result {
+  border-color: #373b40;
+  border-radius: 5px;
+  background: #101214;
+}
+
+.search-result:hover {
+  border-color: #705a30;
+  background: #17191c;
+}
+
+/* Allow the three trees to dominate large screens, similar to dedicated
+   calculators rather than a narrow article column. */
+@media (min-width: 1280px) {
+  .class-layout {
+    --cell: 48px;
+    --gap: 13px;
+  }
+  .tree-columns {
+    flex-wrap: nowrap;
+  }
+  .tree-columns > section {
+    flex: 1 1 0;
+    min-width: 300px;
+    max-width: 380px;
+  }
+}
+
+@media (max-width: 900px) {
+  .tree-columns > section {
+    width: 100%;
+    max-width: 420px;
+  }
+}
