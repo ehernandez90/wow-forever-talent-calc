@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "blizzard-client",
+      "name": "WoW Forever game client / observed data",
+      "trust": "authoritative",
+      "kind": "first-party",
+      "automatedIngest": "reviewed",
+      "reusePolicy": "Store factual/structured observations and identifiers with provenance; do not treat Blizzard artwork/text as MIT-licensed project code.",
+      "notes": "Preferred source for current-build mechanics, API behavior, IDs and observed values."
+    },
+    {
+      "id": "blizzard-news",
+      "name": "Official World of Warcraft news / class deep dives / patch notes",
+      "trust": "authoritative",
+      "kind": "first-party-web",
+      "automatedIngest": "discovery-only",
+      "reusePolicy": "Store URL/date/structured facts and short summaries; do not mirror article prose.",
+      "url": "https://worldofwarcraft.blizzard.com/en-us/news"
+    },
+    {
+      "id": "warcraft-wiki",
+      "name": "Warcraft Wiki",
+      "trust": "verified-secondary",
+      "kind": "community-wiki",
+      "automatedIngest": "manual-review",
+      "license": "CC BY-SA 4.0 for lawfully licensable wiki text; individual media may differ",
+      "reusePolicy": "Prefer factual cross-checking. Any copied/adapted wiki text requires attribution and ShareAlike handling; do not silently mix copied prose into MIT-licensed code/data.",
+      "url": "https://warcraft.wiki.gg/"
+    },
+    {
+      "id": "wowhead",
+      "name": "Wowhead",
+      "trust": "signal-only",
+      "kind": "third-party-reference",
+      "automatedIngest": "disabled",
+      "reusePolicy": "Reference/cross-check only unless explicit permission or a documented reusable data license is established.",
+      "url": "https://www.wowhead.com/forever"
+    },
+    {
+      "id": "mobalytics",
+      "name": "Mobalytics",
+      "trust": "signal-only",
+      "kind": "third-party-reference",
+      "automatedIngest": "disabled",
+      "reusePolicy": "Reference/cross-check only; do not scrape/copy proprietary guide or calculator content.",
+      "url": "https://mobalytics.gg/wow-forever"
+    },
+    {
+      "id": "community",
+      "name": "Community reports / guides / forums",
+      "trust": "signal-only",
+      "kind": "community",
+      "automatedIngest": "disabled",
+      "reusePolicy": "Use as leads. Promote facts only after verification against an authoritative/current-build source."
+    }
+  ]
+}
