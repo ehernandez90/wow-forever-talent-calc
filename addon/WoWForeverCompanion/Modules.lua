@@ -57,7 +57,7 @@ ns:RegisterModule("dashboard", {
             "Data revision: " .. tostring(info.dataRevision),
             "Client: " .. tostring(info.gameVersion) .. " / interface " .. tostring(info.interface),
             "",
-            "Goal: this page becomes your 'what should I do now?' view as leveling, quest, profession and world datasets arrive.",
+            "Goal: this page becomes your 'what should I do now?' view as leveling, quest, profession, gear and world datasets arrive.",
         }
     end,
 })
@@ -130,33 +130,59 @@ ns:RegisterModule("gathering", {
     Render = function() return placeholder("Gathering", { "gathering", "zones", "items" }, "Planned: mining, herbalism, skinning, fishing and Forever-specific gathering sources/routes.") end,
 })
 
+ns:RegisterModule("world", {
+    title = "World",
+    order = 70,
+    Render = function()
+        local p = safePlayerContext()
+        return placeholder("World", { "zones", "npcs", "vendors", "rares", "world-buffs" },
+            "Current zone: " .. p.zone .. ". Planned: zone encyclopedia, NPC/vendor/services, rares/elites, world buffs and nearby points of interest.")
+    end,
+})
+
 ns:RegisterModule("instances", {
     title = "Instances",
-    order = 70,
+    order = 80,
     Render = function() return placeholder("Instances", { "instances", "quests", "items" }, "Planned: dungeon/raid level ranges, entrances, quests, bosses, loot, attunements and preparation checklists.") end,
 })
 
 ns:RegisterModule("reputation", {
     title = "Reputation",
-    order = 80,
+    order = 90,
     Render = function() return placeholder("Reputation", { "reputations", "quests", "items" }, "Planned: factions, turn-ins, grind sources, standing thresholds and rewards.") end,
 })
 
 ns:RegisterModule("travel", {
     title = "Travel",
-    order = 90,
+    order = 100,
     Render = function() return placeholder("Travel", { "travel", "zones", "npcs" }, "Planned: flight masters, transports, portals, zone connections and route instructions.") end,
 })
 
 ns:RegisterModule("items", {
     title = "Items",
-    order = 100,
+    order = 110,
     Render = function() return placeholder("Items", { "items", "quests", "recipes", "instances", "npcs" }, "Planned: reverse source lookup across vendors, quests, drops, crafting and reputation.") end,
+})
+
+ns:RegisterModule("gear", {
+    title = "Gear",
+    order = 120,
+    Render = function()
+        local p = safePlayerContext()
+        return placeholder("Gear", { "gear-guides", "items", "instances", "quests", "recipes" },
+            "Planned: class/level-aware upgrades, source-first gear lists, pre-BiS/BiS recommendations and provenance. Current character context: level " .. tostring(p.level) .. " " .. p.className .. ".")
+    end,
+})
+
+ns:RegisterModule("pvp", {
+    title = "PvP",
+    order = 130,
+    Render = function() return placeholder("PvP", { "pvp", "items", "reputations" }, "Planned: honor/rank progression, battleground objectives, reputation, vendors and rewards.") end,
 })
 
 ns:RegisterModule("updates", {
     title = "Updates",
-    order = 110,
+    order = 140,
     requiredPacks = { "WoWForeverCompanion_Data_Core" },
     Render = function()
         local updates = ns.Data:GetDataset("updates")
@@ -184,7 +210,7 @@ ns:RegisterModule("updates", {
 
 ns:RegisterModule("search", {
     title = "Search",
-    order = 120,
+    order = 150,
     Render = function()
         return {
             "Universal Search",
