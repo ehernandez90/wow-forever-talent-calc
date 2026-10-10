@@ -52,7 +52,7 @@ loadAddon("addon/WoWForeverCompanion_Data_Talents/Generated.lua", "WoWForeverCom
 
 test("registers all navigation modules in stable order", function()
     local modules = ns:GetModules()
-    equal(#modules, 12, "module count")
+    equal(#modules, 15, "module count")
     equal(modules[1].id, "dashboard")
     equal(modules[#modules].id, "search")
 end)
