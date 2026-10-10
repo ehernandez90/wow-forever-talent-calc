@@ -1,0 +1,18 @@
+{
+  "lastReviewed": "2026-10-10",
+  "sourcePolicy": {
+    "authoritative": ["Blizzard class deep dives", "Blizzard patch/beta notes", "official WoW news"],
+    "signalOnly": ["WoW forums", "Wowhead", "Mobalytics", "community calculators"]
+  },
+  "classes": {
+    "druid": {"name":"Druid","currentLabel":"Current / Verified","upcomingLabel":"Upcoming / Announced","changes":[{"type":"new","tree":"Balance","title":"Genesis","detail":"New early-tree periodic damage/healing talent."},{"type":"moved","tree":"Balance","title":"Moonglow","detail":"Moved earlier in the tree and refocused on damaging spells."},{"type":"new","tree":"Balance","title":"Insect Swarm","detail":"New milestone talent in the Balance tree."}],"sources":[{"title":"Forever Class Deep Dive — Hunter and Druid","date":"2026-09-30","url":"https://worldofwarcraft.blizzard.com/en-us/news/24301515","verified":true}]},
+    "hunter": {"name":"Hunter","currentLabel":"Current / Verified","upcomingLabel":"Upcoming / Announced","changes":[{"type":"removed","tree":"Survival","title":"Wyvern Sting","detail":"Removed from its prior talent form as part of the Forever redesign."},{"type":"new","tree":"Survival","title":"Lacerating Strikes","detail":"New 31-point milestone talent."}],"sources":[{"title":"Forever Class Deep Dive — Hunter and Druid","date":"2026-09-30","url":"https://worldofwarcraft.blizzard.com/en-us/news/24301515","verified":true}]},
+    "mage": {"name":"Mage","currentLabel":"Current / Verified","upcomingLabel":"Upcoming / Announced","changes":[],"sources":[{"title":"Forever Class Deep Dive — Mage and Shaman","date":"2026-10-07","url":"https://worldofwarcraft.blizzard.com/en-us/news/24302097","verified":true}]},
+    "paladin": {"name":"Paladin","currentLabel":"Current / Verified","upcomingLabel":"Upcoming / Announced","changes":[],"sources":[]},
+    "priest": {"name":"Priest","currentLabel":"Current / Verified","upcomingLabel":"Upcoming / Announced","changes":[],"sources":[{"title":"Forever Class Deep Dive — Priest and Warrior","date":"2026-09-30","url":"https://worldofwarcraft.blizzard.com/en-gb/news/24301514","verified":true}]},
+    "rogue": {"name":"Rogue","currentLabel":"Current / Verified","upcomingLabel":"Upcoming / Announced","changes":[],"sources":[{"title":"Forever Class Deep Dive — Rogue and Warlock","date":"2026-10-07","url":"https://worldofwarcraft.blizzard.com/en-gb/news/24310968","verified":true}]},
+    "shaman": {"name":"Shaman","currentLabel":"Current / Verified","upcomingLabel":"Upcoming / Announced","changes":[],"sources":[{"title":"Forever Class Deep Dive — Mage and Shaman","date":"2026-10-07","url":"https://worldofwarcraft.blizzard.com/en-us/news/24302097","verified":true}]},
+    "warlock": {"name":"Warlock","currentLabel":"Current / Verified","upcomingLabel":"Upcoming / Announced","changes":[{"type":"moved","tree":"Affliction","title":"Improved Life Tap","detail":"Moved from row 2 to row 1."},{"type":"redesigned","tree":"Affliction","title":"Suppression","detail":"Now improves hit chance and reduces threat."},{"type":"new","tree":"Affliction","title":"Malediction","detail":"New row 2 periodic-damage talent."},{"type":"new","tree":"Affliction","title":"Pandemic","detail":"New row 3 periodic/drain critical-damage talent."}],"sources":[{"title":"Forever Class Deep Dive — Rogue and Warlock","date":"2026-10-07","url":"https://worldofwarcraft.blizzard.com/en-gb/news/24310968","verified":true}]},
+    "warrior": {"name":"Warrior","currentLabel":"Current / Verified","upcomingLabel":"Upcoming / Announced","changes":[],"sources":[{"title":"Forever Class Deep Dive — Priest and Warrior","date":"2026-09-30","url":"https://worldofwarcraft.blizzard.com/en-gb/news/24301514","verified":true}]}
+  }
+}

@@ -1,111 +1,132 @@
-# WoW Forever Talent Calculator
+# WoW Forever Companion
 
-A fan-made talent calculator for **World of Warcraft: Forever** (Classic+),
-announced at BlizzCon 2026. The talent trees were on stream months before
-anyone could log in, so this site was built from that footage: spend points,
-share a build as a link, and see what changed against Classic Era.
+This fork expands the MIT-licensed **WoW Forever Talent Calculator** into a shared data backbone for a much larger **World of Warcraft: Forever** web application and in-game companion addon.
 
-**[deradon.github.io/wow-forever-talent-calc](https://deradon.github.io/wow-forever-talent-calc/)**
-— static site, no account, no tracking, no backend.
+The design goal is simple: keep reviewed game knowledge in this repository once, then compile it into the website and an offline WoW addon so common questions can be answered in-game without constantly opening external sites.
 
-[![The class picker](docs/images/landing.webp)](https://deradon.github.io/wow-forever-talent-calc/)
+## Platform direction
 
-## What it does
+The long-term companion covers:
 
-- **All nine classes**, 469 of 470 talents, with the Classic-style rules:
-  51 points, five per row, prerequisite arrows, tier gating.
-- **Shareable builds.** `#/warrior?v=1&t=...` is the whole build; also a short
-  build code, a Discord-ready text summary, a print view and `embed=1` for
-  forums. Wowhead Classic strings can be imported by talent name.
-- **Honest tooltips.** Every talent says how well it was read. Open a tooltip
-  and press `d` (or move into it) for where the numbers come from: the frame it
-  was read from, the Classic talent its higher ranks were scaled from, and the
-  second reader's wording when the two disagreed.
-- **What changed vs Classic Era** — 145 new talents, 81 moved, 26 with a
-  different rank count, 127 reworded and 108 gone, with an inline word diff.
-- **Races** — 37 racial traits for 9 races (both Skyborne variants) and the
-  race/class matrix, with the 16 combinations Classic Era never allowed.
-- **The spellbook as the stream showed it** — 410 entries and 152 full
-  tooltips over eight classes, every tab of all eight opened at least once.
-- **Keyboard and touch**: arrow keys across the grid, shift-click to max,
-  ctrl-click to clear, undo/redo, tap-to-open tooltips with +/− controls.
+- Dashboard / “what should I do now?” recommendations;
+- leveling routes and milestones;
+- class abilities, talents, builds and class quests;
+- quests and quest chains;
+- professions, recipes and trainers;
+- gathering (mining, herbalism, skinning, fishing and future Forever systems);
+- world/zone/NPC/vendor/rare/world-buff reference;
+- dungeons, raids, bosses, quests, loot and attunements;
+- reputations and rewards;
+- travel/transport connections;
+- items and reverse source lookup;
+- gear upgrade/source planning;
+- PvP/honor/rank/reward reference;
+- current vs upcoming game/class/talent updates;
+- universal search across every loaded data pack;
+- favorites, notes and checklists as cross-cutting character state.
 
-| A class page, tooltip pinned | What changed against Classic |
-|---|---|
-| [![A class page](docs/images/class.webp)](https://deradon.github.io/wow-forever-talent-calc/#/druid) | [![The changes page](docs/images/changes.webp)](https://deradon.github.io/wow-forever-talent-calc/#/changes) |
+See `docs/COMPANION-ARCHITECTURE.md` for the architecture and `docs/DATA-ACQUISITION-ROADMAP.md` for the acquisition order/source policy.
 
-[![The race and class matrix](docs/images/races.webp)](https://deradon.github.io/wow-forever-talent-calc/#/races)
+## What exists in the companion backbone now
 
-## Where the data comes from
+- The original React/Vite talent calculator and its reviewed talent data/pipeline.
+- A new **Updates** page tracking official class-change sources and Current/Upcoming intent.
+- A source/trust policy that keeps community signals separate from promoted facts.
+- `data/companion/manifest.json`, the cross-surface module/dataset catalog.
+- A WoW: Forever addon core under `addon/WoWForeverCompanion` targeting interface `16001`.
+- Clickable addon modules for Dashboard, Leveling, Class, Quests, Professions, Gathering, World, Instances, Reputation, Travel, Items, Gear, PvP, Updates and Search.
+- SavedVariables, slash commands, universal-search and load-on-demand data-pack registries.
+- Generated Core and Talent data packs; CI compiles the existing JSON talent database into Lua rather than maintaining a second copy by hand.
+- Lua 5.1 tests with WoW API stubs plus data/source validation.
+- GitHub Actions that build an installable addon ZIP artifact and run the existing web tests/build.
 
-A local vision model read every talent tooltip out of the BlizzCon 2026 demo
-stream, one hovered cell at a time, and OpenCV placed each reading in its grid
-cell, matched its icon and traced the prerequisite arrows. Only rank 1 was ever
-on screen, so higher ranks are scaled from the matching Classic Era talent and
-the point rules are assumed to be the Classic ones. Every record keeps the
-video timestamp, the frame and the reader's confidence, and nothing claims to
-be official.
+### Addon commands
 
-The honest caveats, in order of how much they should worry you:
-
-- **Numbers are the least reliable part.** Rank 1 was read from a screenshot;
-  ranks 2+ are arithmetic on a Classic scaling pattern, which is wrong wherever
-  Forever retuned a talent.
-- **57 of 469 records have been checked by a human**, 6 are still below the
-  0.8 confidence threshold. The rest are a good draft.
-- **One talent is missing** (mage, Fire, row 1 column 3): it was never hovered
-  on stream.
-- **The rules are assumed**: 51 points, 5 per row, first point at level 10.
-  Nobody has confirmed them for Forever.
-- **The Classic Era comparison is a reference dataset**, not a database dump.
-
-## Report a wrong reading
-
-Open **[a wrong-reading issue](https://github.com/Deradon/wow-forever-talent-calc/issues/new?template=wrong-reading.yml)**
-with the talent and what it should say. The fastest route is the review page —
-`#/review/<class>`, for example
-[`#/review/warrior`](https://deradon.github.io/wow-forever-talent-calc/#/review/warrior) —
-which shows every record beside the tooltip crop it was read from and has a
-"Report on GitHub" link per row that fills the form in for you.
-
-Fixing it yourself is one JSON entry and a pull request: `CONTRIBUTING.md`.
-
-## Run it yourself
-
-Requires `node` >= 22 and, for the data half, [`uv`](https://docs.astral.sh/uv/)
-(Python 3.12). `ffmpeg` and `yt-dlp` are only needed to re-run the extraction
-from video, which also wants an NVIDIA GPU for the local vision model.
-
-```bash
-# once per clone: the tracked hook that keeps AI session links out of commits
-git config core.hooksPath scripts/git-hooks
-
-# the site
-cd web
-npm install
-npm run dev          # http://localhost:5173
-npm test             # vitest, 542 unit tests
-npm run e2e          # playwright, 80 browser tests (once: npx playwright install chromium)
-npm run build        # static files in web/dist, deployable anywhere
-
-# the data
-cd pipeline
-uv run pytest                                              # 461 tests
-uv run python validate.py --check ../data/talents/*.json   # must exit 0
-uv run stages/08_export.py --help                          # extract / promote
+```text
+/wfc
+/wfc tab <id>
+/wfc search <words>
+/wfc status
+/wfc help
 ```
 
-`data/talents/<class>.json` is the source of truth; the site reads nothing
-else. Stage by stage: `pipeline/README.md`. Web details: `web/README.md`. The
-data contract: `docs/DATA-SCHEMA.md`. Plan and history: `docs/PLAN.md`.
-Contributor rules, including the commit-message hook: `CONTRIBUTING.md`.
+See `addon/README.md` for build/install/smoke-test instructions.
 
-## License and affiliation
+## Offline-first addon model
 
-Code is MIT (`LICENSE`). Talent names, descriptions, icons and the frame crops
-under `data/review/` are © Blizzard Entertainment and are not covered by it;
-they are included as a factual reference to a publicly broadcast demo.
+WoW addon Lua is sandboxed and cannot query this website/GitHub in realtime. The repository is therefore the source of truth and releases carry compiled data:
 
-**Not affiliated with, endorsed by, or connected to Blizzard Entertainment.**
-World of Warcraft is a trademark of Blizzard Entertainment, Inc. This is an
-unofficial fan project, and its data is unofficial and partly unverified.
+```text
+sources -> review/validation -> canonical JSON -> web app
+                                      |
+                                      +-> Lua data-pack compiler -> addon ZIP
+```
+
+As the database grows, large packs can remain load-on-demand so the player does not pay the memory/startup cost for every quest, recipe and item at login.
+
+---
+
+# Original WoW Forever Talent Calculator foundation
+
+The project began as a fan-made talent calculator for **World of Warcraft: Forever** (Classic+), announced at BlizzCon 2026. The talent trees were on stream months before anyone could log in, so the original site was built from that footage: spend points, share a build as a link, and see what changed against Classic Era.
+
+Upstream/original project: **https://github.com/Deradon/wow-forever-talent-calc**
+
+## Talent calculator features inherited from upstream
+
+- **All nine classes**, 469 of 470 talents, with the Classic-style rules: 51 points, five per row, prerequisite arrows and tier gating.
+- **Shareable builds.** `#/warrior?v=1&t=...` is the whole build; also a short build code, Discord-ready summary, print view and `embed=1`.
+- **Honest tooltips.** Records preserve confidence/provenance instead of presenting uncertain readings as official facts.
+- **What changed vs Classic Era** with moved/new/reworded/rank-count/removal comparisons.
+- **Races** and race/class matrix.
+- **Spellbook** coverage from the original stream capture.
+- **Keyboard and touch** controls, undo/redo and tooltip controls.
+
+## Where the original talent data came from
+
+A local vision model read talent tooltips from the BlizzCon 2026 demo stream, OpenCV placed readings in grid cells, matched icons and traced prerequisite arrows. Only rank 1 was visible in the footage, so higher ranks in the original dataset may be extrapolated from matching Classic patterns. Every record preserves provenance and the project does not claim uncertain data is official.
+
+Important inherited caveats include:
+
+- numbers/ranks derived from early footage can be less reliable than talent identity/position;
+- many records still need human/current-client verification;
+- one original Mage talent was not visible in the source footage;
+- some point-system rules began as Classic assumptions;
+- the Classic Era comparison is reference data, not a database dump.
+
+The Companion direction is specifically designed to improve this over time with build-aware snapshots and verified current-client data rather than silently overwriting history.
+
+## Development
+
+Requires Node 22+ for the web/data-pack tooling and Python/`uv` for the inherited extraction pipeline. `ffmpeg` and `yt-dlp` are only needed to re-run video extraction.
+
+```bash
+# site
+cd web
+npm install
+npm run dev
+npm test
+npm run e2e
+npm run build
+
+# inherited talent pipeline
+cd pipeline
+uv run pytest
+uv run python validate.py --check ../data/talents/*.json
+
+# companion validation / addon data generation (from repo root)
+node scripts/validate-companion-data.mjs
+node scripts/validate-source-registry.mjs
+node scripts/build-addon-data.mjs
+lua5.1 addon/tests/run.lua
+```
+
+`data/talents/<class>.json` remains the current talent source of truth. The broader companion catalog lives under `data/companion/` and will grow domain by domain.
+
+## License, sources and affiliation
+
+Project code remains MIT (`LICENSE`) subject to retained upstream attribution. Blizzard game content (including talent names/descriptions/icons/screenshots) is property of Blizzard Entertainment and is not made MIT by this repository.
+
+Third-party source material is not automatically copied into the project. `data/companion/sources.json` documents trust and reuse boundaries; for example, Warcraft Wiki text is subject to its CC BY-SA terms, while proprietary calculators/guides are reference signals unless reuse permission/licensing is established.
+
+**Not affiliated with, endorsed by, or connected to Blizzard Entertainment.** World of Warcraft is a trademark of Blizzard Entertainment, Inc. This is an unofficial fan project.

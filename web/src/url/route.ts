@@ -1,34 +1,13 @@
 /**
- * Hash routing: `#/`, `#/<class>?v=<N>&t=<build>`, `#/changes[/<class>]`,
- * `#/races[/<race>][?variant=<id>]`, `#/spells[/<class>]`, `#/about`,
- * `#/review/<class>`.
- * No router library: parseHash plus a `hashchange` listener in App.tsx.
- *
- * Two optional parameters ride along on the class route and are ignored by the
- * build codec (brief `docs/briefs/ui-improvements.md`, section 5):
- *
- *   `sel=<talentId>`  open that talent's tooltip, pinned. Written while a
- *                     talent is pinned, dropped when it is dismissed, so a
- *                     `#/changes` row can link at one talent.
- *   `embed=1`         chromeless: trees, a points line and a link back.
+ * Hash routing for the static calculator.
  */
 export type Route =
   | { kind: 'picker' }
   | { kind: 'class'; classId: string; version?: number; build?: string; sel?: string; embed?: true }
   | { kind: 'changes'; classId?: string }
-  /**
-   * `#/races` is the race/class matrix, `#/races/<race>` one race. `variant`
-   * picks the Skyborne variant and is view state: an unknown id falls back to
-   * the Alliance variant rather than emptying the page.
-   */
+  | { kind: 'updates' }
   | { kind: 'races'; raceId?: string; variant?: string }
-  /**
-   * `#/spells` is the coverage overview, `#/spells/<class>` one class's
-   * spellbook as the stream showed it. Priest has no file and is not a route:
-   * the page says so rather than rendering an empty book.
-   */
   | { kind: 'spells'; classId?: string }
-  /** `#/about`: what this is, how the data was made, what to distrust. */
   | { kind: 'about' }
   | { kind: 'review'; classId: string }
   | { kind: 'unknown'; hash: string }
@@ -48,25 +27,21 @@ export function parseHash(hash: string): Route {
   if (segments[0] === 'review' && segments[1] && SLUG.test(segments[1])) {
     return { kind: 'review', classId: segments[1] }
   }
-  // `#/changes` is the whole-game overview, `#/changes/<class>` one class.
   if (segments[0] === 'changes' && segments.length <= 2) {
     if (segments.length === 1) return { kind: 'changes' }
     if (segments[1] && SLUG.test(segments[1])) return { kind: 'changes', classId: segments[1] }
   }
-  // `#/races` is the matrix, `#/races/<race>` one race and its traits.
+  if (segments[0] === 'updates' && segments.length === 1) return { kind: 'updates' }
   if (segments[0] === 'races' && segments.length <= 2) {
     const variant = params.get('variant')
     const view = variant && SLUG.test(variant) ? { variant } : {}
     if (segments.length === 1) return { kind: 'races' }
     if (segments[1] && SLUG.test(segments[1])) return { kind: 'races', raceId: segments[1], ...view }
   }
-  // `#/spells` is the coverage overview, `#/spells/<class>` one spellbook.
   if (segments[0] === 'spells' && segments.length <= 2) {
     if (segments.length === 1) return { kind: 'spells' }
     if (segments[1] && SLUG.test(segments[1])) return { kind: 'spells', classId: segments[1] }
   }
-  // Before the class branch: `about` is a slug and would otherwise be read as a
-  // class id and 404 as "Unknown class".
   if (segments.length === 1 && segments[0] === 'about') return { kind: 'about' }
   if (segments.length === 1 && segments[0] && SLUG.test(segments[0])) {
     const v = params.get('v')
@@ -87,20 +62,14 @@ export function parseHash(hash: string): Route {
 
 export function buildHash(route: Route): string {
   switch (route.kind) {
-    case 'picker':
-      return '#/'
-    case 'review':
-      return `#/review/${route.classId}`
-    case 'changes':
-      return route.classId ? `#/changes/${route.classId}` : '#/changes'
-    case 'spells':
-      return route.classId ? `#/spells/${route.classId}` : '#/spells'
-    case 'about':
-      return '#/about'
+    case 'picker': return '#/'
+    case 'review': return `#/review/${route.classId}`
+    case 'changes': return route.classId ? `#/changes/${route.classId}` : '#/changes'
+    case 'updates': return '#/updates'
+    case 'spells': return route.classId ? `#/spells/${route.classId}` : '#/spells'
+    case 'about': return '#/about'
     case 'races': {
       if (!route.raceId) return '#/races'
-      // The variant only means something on a race that has variants, so it is
-      // never written without a race.
       return `#/races/${route.raceId}${route.variant ? `?variant=${route.variant}` : ''}`
     }
     case 'class': {
@@ -109,54 +78,22 @@ export function buildHash(route: Route): string {
         if (route.version !== undefined) params.set('v', String(route.version))
         params.set('t', route.build)
       }
-      // Both are view state, not build state: they come after `t=` so the
-      // shareable prefix of a link stays the one round 1 published.
       if (route.sel) params.set('sel', route.sel)
       if (route.embed) params.set('embed', '1')
       const qs = params.toString()
       return `#/${route.classId}${qs ? `?${qs}` : ''}`
     }
-    default:
-      return route.hash
+    default: return route.hash
   }
 }
 
-/** View state that rides along on a class hash without touching the build. */
-export interface ClassView {
-  /** Talent whose tooltip is pinned open. */
-  sel?: string
-  /** Chromeless embed. */
-  embed?: boolean
-}
+export interface ClassView { sel?: string; embed?: boolean }
 
-/** Hash for a class build: `#/warrior?v=3&t=30502-05-3`, or `#/warrior` when empty. */
 export function classHash(classId: string, version: number, build: string, view: ClassView = {}): string {
-  return buildHash({
-    kind: 'class',
-    classId,
-    version,
-    build: build || undefined,
-    sel: view.sel,
-    embed: view.embed ? true : undefined,
-  })
+  return buildHash({ kind: 'class', classId, version, build: build || undefined, sel: view.sel, embed: view.embed ? true : undefined })
 }
-
-/** `#/changes` or `#/changes/<class>`. */
-export function changesHash(classId?: string): string {
-  return buildHash({ kind: 'changes', classId })
-}
-
-/** `#/spells` or `#/spells/<class>`. */
-export function spellsHash(classId?: string): string {
-  return buildHash({ kind: 'spells', classId })
-}
-
-/** `#/about`. */
-export function aboutHash(): string {
-  return buildHash({ kind: 'about' })
-}
-
-/** `#/races`, `#/races/<race>` or `#/races/<race>?variant=<id>`. */
-export function racesHash(raceId?: string, variant?: string): string {
-  return buildHash({ kind: 'races', raceId, variant })
-}
+export function changesHash(classId?: string): string { return buildHash({ kind: 'changes', classId }) }
+export function updatesHash(): string { return buildHash({ kind: 'updates' }) }
+export function spellsHash(classId?: string): string { return buildHash({ kind: 'spells', classId }) }
+export function aboutHash(): string { return buildHash({ kind: 'about' }) }
+export function racesHash(raceId?: string, variant?: string): string { return buildHash({ kind: 'races', raceId, variant }) }

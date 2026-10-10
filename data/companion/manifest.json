@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "project": "wow-forever-companion",
+  "gameFlavor": "forever",
+  "gameVersion": "1.60.1",
+  "interface": 16001,
+  "dataRevision": "2026-10-10-v1",
+  "sourcePolicy": {
+    "authoritative": [
+      "Blizzard client/observed data",
+      "Blizzard class deep dives",
+      "Blizzard patch and beta notes",
+      "official World of Warcraft news"
+    ],
+    "verifiedSecondary": [
+      "current-build references cross-checked against Forever"
+    ],
+    "signalOnly": [
+      "Blizzard forum discussion",
+      "Wowhead",
+      "Mobalytics",
+      "community calculators",
+      "community guides"
+    ]
+  },
+  "modules": [
+    {"id":"dashboard","title":"Dashboard","order":10,"status":"backbone"},
+    {"id":"leveling","title":"Leveling","order":20,"status":"planned"},
+    {"id":"class","title":"Class","order":30,"status":"partial","datasets":["talents","updates"]},
+    {"id":"quests","title":"Quests","order":40,"status":"planned"},
+    {"id":"professions","title":"Professions","order":50,"status":"planned"},
+    {"id":"gathering","title":"Gathering","order":60,"status":"planned"},
+    {"id":"world","title":"World","order":70,"status":"planned"},
+    {"id":"instances","title":"Instances","order":80,"status":"planned"},
+    {"id":"reputation","title":"Reputation","order":90,"status":"planned"},
+    {"id":"travel","title":"Travel","order":100,"status":"planned"},
+    {"id":"items","title":"Items","order":110,"status":"planned"},
+    {"id":"gear","title":"Gear","order":120,"status":"planned"},
+    {"id":"pvp","title":"PvP","order":130,"status":"planned"},
+    {"id":"updates","title":"Updates","order":140,"status":"partial","datasets":["updates"]},
+    {"id":"search","title":"Search","order":150,"status":"backbone"}
+  ],
+  "datasets": [
+    {
+      "id": "talents",
+      "domain": "classes",
+      "status": "live",
+      "canonicalPath": "data/talents",
+      "pack": "WoWForeverCompanion_Data_Talents",
+      "provenanceRequired": true
+    },
+    {
+      "id": "updates",
+      "domain": "updates",
+      "status": "live",
+      "canonicalPath": "web/src/data/foreverUpdates.json",
+      "pack": "WoWForeverCompanion_Data_Core",
+      "provenanceRequired": true,
+      "note": "Temporary canonical location; migrate to data/companion/updates when the web generator is unified."
+    },
+    {"id":"abilities","domain":"classes","status":"planned","canonicalPath":"data/companion/abilities","pack":"WoWForeverCompanion_Data_Class"},
+    {"id":"class-quests","domain":"classes","status":"planned","canonicalPath":"data/companion/class-quests","pack":"WoWForeverCompanion_Data_Class"},
+    {"id":"leveling-routes","domain":"leveling","status":"planned","canonicalPath":"data/companion/leveling","pack":"WoWForeverCompanion_Data_Quests"},
+    {"id":"quests","domain":"quests","status":"planned","canonicalPath":"data/companion/quests","pack":"WoWForeverCompanion_Data_Quests"},
+    {"id":"npcs","domain":"world","status":"planned","canonicalPath":"data/companion/npcs","pack":"WoWForeverCompanion_Data_World"},
+    {"id":"zones","domain":"world","status":"planned","canonicalPath":"data/companion/zones","pack":"WoWForeverCompanion_Data_World"},
+    {"id":"vendors","domain":"world","status":"planned","canonicalPath":"data/companion/vendors","pack":"WoWForeverCompanion_Data_World"},
+    {"id":"rares","domain":"world","status":"planned","canonicalPath":"data/companion/rares","pack":"WoWForeverCompanion_Data_World"},
+    {"id":"world-buffs","domain":"world","status":"planned","canonicalPath":"data/companion/world-buffs","pack":"WoWForeverCompanion_Data_World"},
+    {"id":"items","domain":"items","status":"planned","canonicalPath":"data/companion/items","pack":"WoWForeverCompanion_Data_World"},
+    {"id":"professions","domain":"professions","status":"planned","canonicalPath":"data/companion/professions","pack":"WoWForeverCompanion_Data_Professions"},
+    {"id":"recipes","domain":"professions","status":"planned","canonicalPath":"data/companion/recipes","pack":"WoWForeverCompanion_Data_Professions"},
+    {"id":"gathering","domain":"gathering","status":"planned","canonicalPath":"data/companion/gathering","pack":"WoWForeverCompanion_Data_Professions"},
+    {"id":"instances","domain":"instances","status":"planned","canonicalPath":"data/companion/instances","pack":"WoWForeverCompanion_Data_Instances"},
+    {"id":"reputations","domain":"reputation","status":"planned","canonicalPath":"data/companion/reputation","pack":"WoWForeverCompanion_Data_World"},
+    {"id":"travel","domain":"travel","status":"planned","canonicalPath":"data/companion/travel","pack":"WoWForeverCompanion_Data_World"},
+    {"id":"gear-guides","domain":"gear","status":"planned","canonicalPath":"data/companion/gear","pack":"WoWForeverCompanion_Data_Guides"},
+    {"id":"pvp","domain":"pvp","status":"planned","canonicalPath":"data/companion/pvp","pack":"WoWForeverCompanion_Data_World"}
+  ]
+}

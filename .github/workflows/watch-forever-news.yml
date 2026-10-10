@@ -1,0 +1,25 @@
+name: Watch Blizzard Forever News
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 * * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check official Blizzard news
+        run: node scripts/watch-forever-news.mjs
+      - name: Upload detected source state
+        uses: actions/upload-artifact@v4
+        with:
+          name: forever-news-watch
+          path: data/forever-news-watch.json
