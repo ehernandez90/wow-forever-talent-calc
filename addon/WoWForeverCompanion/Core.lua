@@ -1,7 +1,7 @@
 local addonName, ns = ...
 
 ns.name = addonName or "WoWForeverCompanion"
-ns.version = "0.1.0"
+ns.version = "0.1.2"
 ns.dataRevision = "2026-10-10-v1"
 ns.modules = ns.modules or {}
 ns.moduleOrder = ns.moduleOrder or {}
@@ -33,6 +33,7 @@ local DEFAULT_DB = {
     checklists = {},
     notes = {},
     window = { point = "CENTER", x = 0, y = 0 },
+    minimap = { angle = 220, hidden = false },
 }
 
 local function copyDefaults(target, defaults)
@@ -209,6 +210,24 @@ function ns:HandleSlashCommand(message)
             for i = 1, #lines do self:Print(lines[i]) end
         end
         return "search"
+    elseif command == "minimap" then
+        local action = string.lower(rest or "")
+        if action == "hide" then
+            self.db.minimap.hidden = true
+            if self.UI and self.UI.minimapButton then self.UI.minimapButton:Hide() end
+            self:Print("Minimap button hidden. Use /wfc minimap show to restore it.")
+        elseif action == "reset" then
+            self.db.minimap.angle = 220
+            self.db.minimap.hidden = false
+            if self.UI and self.UI.UpdateMinimapButtonPosition then self.UI:UpdateMinimapButtonPosition() end
+            if self.UI and self.UI.minimapButton then self.UI.minimapButton:Show() end
+            self:Print("Minimap button position reset.")
+        else
+            self.db.minimap.hidden = false
+            if self.UI and self.UI.minimapButton then self.UI.minimapButton:Show() end
+            self:Print("Minimap button shown. Drag it around the minimap ring to reposition it.")
+        end
+        return "minimap"
     elseif command == "status" or command == "version" then
         local lines = self:StatusLines()
         for i = 1, #lines do self:Print(lines[i]) end
@@ -218,6 +237,7 @@ function ns:HandleSlashCommand(message)
         self:Print("/wfc — open/close")
         self:Print("/wfc tab <id> — open a tab")
         self:Print("/wfc search <words> — universal search")
+        self:Print("/wfc minimap [show|hide|reset] — minimap launcher")
         self:Print("/wfc status — addon/data/client versions")
         return "help"
     end
