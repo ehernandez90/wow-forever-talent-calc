@@ -1,0 +1,14 @@
+## Interface: 16000, 16001
+## Title: WoW Forever Companion
+## Notes: Offline knowledge hub for World of Warcraft: Forever (Camelot)
+## Author: ehernandez90
+## Version: 0.1.1-camelot-test
+## SavedVariables: WoWForeverCompanionDB
+## X-Game-Flavor: Camelot
+## X-Data-Revision: 2026-10-10-v1
+
+DataRegistry.lua
+Search.lua
+Core.lua
+Modules.lua
+UI.lua
