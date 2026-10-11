@@ -4,6 +4,7 @@ on:
   pull_request:
   push:
     branches:
+      - main
       - feature/v1-upcoming-comparison
   workflow_dispatch:
 
@@ -50,7 +51,7 @@ jobs:
           cp -R addon/WoWForeverCompanion_Data_Core dist/
           cp -R addon/WoWForeverCompanion_Data_Talents dist/
           cd dist
-          zip -r wow-forever-companion-v1.zip \
+          zip -r wow-forever-companion-camelot-test.zip \
             WoWForeverCompanion \
             WoWForeverCompanion_Data_Core \
             WoWForeverCompanion_Data_Talents
@@ -58,8 +59,8 @@ jobs:
       - name: Upload installable addon artifact
         uses: actions/upload-artifact@v4
         with:
-          name: wow-forever-companion-v1
-          path: dist/wow-forever-companion-v1.zip
+          name: wow-forever-companion-camelot-test
+          path: dist/wow-forever-companion-camelot-test.zip
           if-no-files-found: error
 
   web:
