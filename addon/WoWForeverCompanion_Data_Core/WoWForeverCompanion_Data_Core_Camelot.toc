@@ -1,0 +1,11 @@
+## Interface: 16000, 16001
+## Title: WoW Forever Companion - Core Data
+## Notes: Version/update metadata for WoW Forever Companion (Camelot)
+## Author: ehernandez90
+## Version: 0.1.1-camelot-test
+## Dependencies: WoWForeverCompanion
+## LoadOnDemand: 1
+## X-Game-Flavor: Camelot
+## X-Data-Pack: core
+
+Generated.lua
