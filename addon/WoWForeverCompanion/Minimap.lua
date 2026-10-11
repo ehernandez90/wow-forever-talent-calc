@@ -8,11 +8,11 @@ local addonName, ns = ...
 local UI = ns.UI
 if not UI then return end
 
-ns.version = "0.1.3"
+ns.version = "0.1.4"
 
 local DEFAULT_ANGLE = 38
-local OUTSIDE_GAP = 14
-local BUTTON_SIZE = 32
+local OUTSIDE_GAP = 6
+local BUTTON_SIZE = 31
 
 local function atan2(y, x)
     if math.atan2 then return math.atan2(y, x) end
@@ -33,12 +33,9 @@ local function ensureMinimapSettings()
 end
 
 local function minimapRadius()
-    if not Minimap then return 100 end
+    if not Minimap then return 76 end
     local width = (Minimap.GetWidth and Minimap:GetWidth()) or 140
-    local height = (Minimap.GetHeight and Minimap:GetHeight()) or width
-    local half = math.max(width or 140, height or 140) / 2
-    -- Half the button must clear the map edge, then add a visible air gap.
-    return half + (BUTTON_SIZE / 2) + OUTSIDE_GAP
+    return width / 2 + OUTSIDE_GAP
 end
 
 function UI:UpdateMinimapButtonPosition()
@@ -67,7 +64,7 @@ function UI:UpdateMinimapButtonFromCursor()
     if not mx or not my then return end
 
     local cx, cy = GetCursorPosition()
-    local scale = (UIParent and UIParent.GetEffectiveScale and UIParent:GetEffectiveScale()) or 1
+    local scale = (Minimap.GetEffectiveScale and Minimap:GetEffectiveScale()) or 1
     if not scale or scale == 0 then scale = 1 end
     cx, cy = cx / scale, cy / scale
 
