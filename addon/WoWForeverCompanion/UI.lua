@@ -6,6 +6,7 @@ local UI = ns.UI
 UI.frame = nil
 UI.navButtons = {}
 UI.selectedModule = nil
+UI.minimapButton = nil
 
 local function setColor(texture, r, g, b, a)
     if texture and texture.SetColorTexture then texture:SetColorTexture(r, g, b, a) end
@@ -49,6 +50,120 @@ local function makeNavButton(parent, module, y)
     button:SetScript("OnClick", function()
         UI:ShowModule(module.id)
     end)
+    return button
+end
+
+local function atan2(y, x)
+    if math.atan2 then return math.atan2(y, x) end
+    if x > 0 then return math.atan(y / x) end
+    if x < 0 and y >= 0 then return math.atan(y / x) + math.pi end
+    if x < 0 and y < 0 then return math.atan(y / x) - math.pi end
+    if x == 0 and y > 0 then return math.pi / 2 end
+    if x == 0 and y < 0 then return -math.pi / 2 end
+    return 0
+end
+
+function UI:UpdateMinimapButtonPosition()
+    local button = self.minimapButton
+    if not button or not Minimap then return end
+
+    local angle = tonumber(ns.db and ns.db.minimap and ns.db.minimap.angle) or 220
+    local radians = math.rad(angle)
+    local radius = 78
+    button:ClearAllPoints()
+    button:SetPoint("CENTER", Minimap, "CENTER", math.cos(radians) * radius, math.sin(radians) * radius)
+end
+
+function UI:UpdateMinimapButtonFromCursor()
+    if not self.minimapButton or not Minimap or type(GetCursorPosition) ~= "function" then return end
+
+    local mx, my = Minimap:GetCenter()
+    if not mx or not my then return end
+
+    local cx, cy = GetCursorPosition()
+    local scale = Minimap.GetEffectiveScale and Minimap:GetEffectiveScale() or 1
+    if not scale or scale == 0 then scale = 1 end
+    cx, cy = cx / scale, cy / scale
+
+    local angle = math.deg(atan2(cy - my, cx - mx))
+    if angle < 0 then angle = angle + 360 end
+    if ns.db and ns.db.minimap then ns.db.minimap.angle = angle end
+    self:UpdateMinimapButtonPosition()
+end
+
+function UI:CreateMinimapButton()
+    if self.minimapButton or type(CreateFrame) ~= "function" or not Minimap then return self.minimapButton end
+
+    local button = CreateFrame("Button", "WoWForeverCompanionMinimapButton", Minimap)
+    button:SetSize(32, 32)
+    button:SetFrameStrata("MEDIUM")
+    button:SetFrameLevel((Minimap.GetFrameLevel and Minimap:GetFrameLevel() or 1) + 8)
+    button:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    button:RegisterForDrag("LeftButton")
+
+    local icon = button:CreateTexture(nil, "ARTWORK")
+    icon:SetSize(20, 20)
+    icon:SetPoint("CENTER", 0, 0)
+    icon:SetTexture("Interface\\Icons\\INV_Misc_Map_01")
+    button.icon = icon
+
+    local border = button:CreateTexture(nil, "OVERLAY")
+    border:SetSize(54, 54)
+    border:SetPoint("CENTER", 0, 0)
+    border:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+
+    local highlight = button:CreateTexture(nil, "HIGHLIGHT")
+    highlight:SetSize(32, 32)
+    highlight:SetPoint("CENTER", 0, 0)
+    highlight:SetTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+    highlight:SetBlendMode("ADD")
+
+    button:SetScript("OnClick", function(_, mouseButton)
+        if mouseButton == "RightButton" then
+            if ns.db and ns.db.minimap then
+                ns.db.minimap.angle = 220
+                ns.db.minimap.hidden = false
+            end
+            UI:UpdateMinimapButtonPosition()
+            return
+        end
+        ns:Toggle()
+    end)
+
+    button:SetScript("OnDragStart", function(self)
+        self:SetScript("OnUpdate", function()
+            UI:UpdateMinimapButtonFromCursor()
+        end)
+    end)
+
+    button:SetScript("OnDragStop", function(self)
+        self:SetScript("OnUpdate", nil)
+        UI:UpdateMinimapButtonFromCursor()
+    end)
+
+    button:SetScript("OnEnter", function(self)
+        if not GameTooltip then return end
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText("WoW Forever Companion", 0.94, 0.72, 0.30)
+        GameTooltip:AddLine("Left-click: Open / close", 1, 1, 1)
+        GameTooltip:AddLine("Drag: Move around minimap", 0.75, 0.78, 0.82)
+        GameTooltip:AddLine("Right-click: Reset position", 0.75, 0.78, 0.82)
+        GameTooltip:Show()
+    end)
+
+    button:SetScript("OnLeave", function()
+        if GameTooltip then GameTooltip:Hide() end
+    end)
+
+    self.minimapButton = button
+    self:UpdateMinimapButtonPosition()
+
+    if ns.db and ns.db.minimap and ns.db.minimap.hidden then
+        button:Hide()
+    else
+        button:Show()
+    end
+
     return button
 end
 
@@ -253,4 +368,5 @@ end
 
 function UI:Initialize()
     self:Create()
+    self:CreateMinimapButton()
 end
